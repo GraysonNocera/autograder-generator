@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+src/autograder/__init__.py
+src/autograder/test.py
+src/autograder_generator.egg-info/PKG-INFO
+src/autograder_generator.egg-info/SOURCES.txt
+src/autograder_generator.egg-info/dependency_links.txt
+src/autograder_generator.egg-info/top_level.txt
