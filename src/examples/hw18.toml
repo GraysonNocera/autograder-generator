@@ -1,14 +1,13 @@
-[global] # ALL REQUIRED
+[global] # ALL GLOBAL FIELDS REQUIRED
 files_from_student = [ "main.c", "maze.c", "maze.h" ]
 files_from_solution = []
 executable = "hw18"
 
-[requirements-txt]
+[requirements-txt] # OPTIONAL: if using default file, no need to include this line or the line below
 injected = false
 
 [run_autograder]
-injected = true
-path = "run_autograder"
+injected = false
 
 [run_tests-py]
 injected = false
