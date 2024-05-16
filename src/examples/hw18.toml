@@ -1,0 +1,49 @@
+[global] # ALL REQUIRED
+files_from_student = [ "main.c", "maze.c", "maze.h" ]
+files_from_solution = []
+executable = "hw18"
+
+[requirements-txt]
+injected = false
+
+[run_autograder]
+injected = true
+path = "run_autograder"
+
+[run_tests-py]
+injected = false
+
+[setup-sh]
+injected = false
+
+[tests]
+description = """
+Python test files within the tests/ directory. TAs can inject these 
+files or give parameters in this toml to automatically generate them.
+"""
+
+[tests.test_files] # OPTIONAL
+weight = 10
+
+[tests.test_gcc] # OPTIONAL
+weight = 20
+command = "gcc -Wall -Werror -g main.c maze.c -o hw18"
+
+[tests.test_memory]
+weight = 20
+valgrind_options = [ "--leak-check=full", "--error-exitcode=1" ]
+command_arguments = [ "input1.txt" ] # this is only the arguments after the executable
+
+[tests.test_program]
+weight = 60 # splits this weight between the number of tests
+
+[tests.test_program.0]
+command_arguments = [ "input1.txt" ]
+expected_in_file = true
+expected_output = "output1.txt"
+
+[tests.test_program.1]
+command_arguments = [ "input2.txt" ]
+expected_in_file = true
+expected_output = "output2.txt"
+
