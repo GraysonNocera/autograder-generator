@@ -21,12 +21,22 @@ class Generator:
                 f.write("cd /autograder/source\n")
                 f.write("python3 run_tests.py\n")
         self._generate_template_file("run_autograder", "run_autograder", inject)
+        self._generate_tests()
 
         self.zip.close()
 
+    def _generate_tests(self):
+        self._generate_test_files()
+
+    def _generate_test_files(self, config):
+        config = self.config.get("tests", {})
+        config = config.get("test_files", [])
+        for test in config:
+            self._generate_test_file(test)
+
     def _generate_template_file(self, key, default_filename, inject=None):
-        config = self.config[key] if key in self.config else {}
-        if "injected" in config and config["injected"]:
+        config = self.config.get(key, {})
+        if config.get("inject", False):
             self.zip.write(config["path"], default_filename)
             return
         path_to_template = pathlib.Path(__file__).parent / "templates" / default_filename
