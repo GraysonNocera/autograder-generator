@@ -10,11 +10,11 @@ from parameterized import parameterized
 
 NUM_TESTS = sum(1 for value in config.get("tests", {}).get("test_program", {}).values() if isinstance(value, dict)) 
 
-class test_program(unittest.TestCase):
+class TestProgram(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        test_files.test_files().test_files()
-        test_compile.test_compile().test_compile()
+        test_files.TestFiles().test_files()
+        test_compile.TestCompile().test_compile()
 
         self._base_directory = os.path.dirname(os.path.dirname(__file__))
 
@@ -43,7 +43,6 @@ class test_program(unittest.TestCase):
     @weight(weights.TEST_PROGRAM / NUM_TESTS)
     @parameterized.expand(load_test_cases)
     def test_program(self, _, command_arguments, output, expected_output):
-        
         executable = config.get("global", {}).get("executable", "a.out")
         command = f"./{executable} {' '.join(command_arguments)}"
         process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=os.path.dirname(os.path.dirname(__file__)))

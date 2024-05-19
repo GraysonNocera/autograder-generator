@@ -9,9 +9,9 @@ class Generator:
         self.zip = zipfile.ZipFile(f"{self.config["global"]["executable"]}.zip", "w")
 
     def generate(self):        
-        self._generate_template_file("setup-sh", "setup.sh")
-        self._generate_template_file("requirements-txt", "requirements.txt")
-        self._generate_template_file("run_tests-py", "run_tests.py")
+        self._generate_template_file(self.config, "setup-sh", "setup.sh")
+        self._generate_template_file(self.config, "requirements-txt", "requirements.txt")
+        self._generate_template_file(self.config, "run_tests-py", "run_tests.py")
 
         def inject(file):
             with open(file, "w") as f:
@@ -20,22 +20,20 @@ class Generator:
                     f.write(f"cp /autograder/submission/{file} /autograder/source/{file}\n")
                 f.write("cd /autograder/source\n")
                 f.write("python3 run_tests.py\n")
-        self._generate_template_file("run_autograder", "run_autograder", inject)
+        self._generate_template_file(self.config, "run_autograder", "run_autograder", inject)
         self._generate_tests()
 
         self.zip.close()
 
     def _generate_tests(self):
-        self._generate_test_files()
+        config = self.config.get("tests")
+        self._generate_template_file(config, "test_files", "tests/test_files.py")
+        self._generate_template_file(config, "test_gcc", "tests/test_gcc.py")
+        self._generate_template_file(config, "test_memory", "tests/test_memory.py")
+        self._generate_template_file(config, "test_compile", "tests/test_compile.py")
 
-    def _generate_test_files(self, config):
-        config = self.config.get("tests", {})
-        config = config.get("test_files", [])
-        for test in config:
-            self._generate_test_file(test)
-
-    def _generate_template_file(self, key, default_filename, inject=None):
-        config = self.config.get(key, {})
+    def _generate_template_file(self, base_config, key, default_filename, inject=None):
+        config = base_config.get(key, {})
         if config.get("inject", False):
             self.zip.write(config["path"], default_filename)
             return
@@ -43,7 +41,6 @@ class Generator:
         if inject:
             inject(path_to_template)
         self.zip.write(path_to_template, default_filename)
-        return
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate an autograder")

@@ -5,7 +5,7 @@ import weights
 from config import config
 import os
 
-class test_files(unittest.TestCase):
+class TestFiles(unittest.TestCase):
     @weight(weights.TEST_FILES)
     def test_files(self):
         """Check submitted files"""
