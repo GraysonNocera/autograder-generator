@@ -1,8 +1,6 @@
 import unittest
 from gradescope_utils.autograder_utils.decorators import weight
-from gradescope_utils.autograder_utils.files import check_submitted_files
 import os
-import random
 import test_compile
 import test_files
 import weights
@@ -22,18 +20,18 @@ class TestMemory(unittest.TestCase):
 
       self._base_directory = os.path.dirname(os.path.dirname(__file__))
 
-      input_directory_name = config.get("tests", {}).get("input_directory", "inputs")    
+      input_directory_name = config["tests"].get("input_directory", "inputs")    
       self._input_directory = os.path.join(self._base_directory, input_directory_name)
       self._input_files = os.listdir(self._input_directory)
 
-      expected_directory_name = config.get("tests", {}).get("expected_directory", "expected")
+      expected_directory_name = config["tests"].get("expected_directory", "expected")
       self._expected_directory = os.path.join(self._base_directory, expected_directory_name)
       self._expected_files = os.listdir(self._expected_directory)
 
   @weight(weights.TEST_MEMORY)          
   def test_memory(self):
-    executable = config.get("global").get("executable")
-    command_arguments = config.get("tests").get("test_memory").get("command_arguments")
+    executable = config["global"]["executable"]
+    command_arguments = config["tests"]["test_memory"]["command_arguments"]
     command = f"valgrind -s --errors-for-leak-kinds=all --leak-check=full --show-leak-kinds=all --error-exitcode={MEMORY_ERROR} ./{executable} {' '.join(command_arguments)}"  
     
     result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=self._base_directory)

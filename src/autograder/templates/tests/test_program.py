@@ -8,7 +8,20 @@ import subprocess
 from config import config
 from parameterized import parameterized
 
-NUM_TESTS = sum(1 for value in config.get("tests", {}).get("test_program", {}).values() if isinstance(value, dict)) 
+NUM_TESTS = sum(1 for value in config["tests"]["test_program"].values() if isinstance(value, dict)) 
+
+def load_test_cases():
+    test_cases = []
+    config_tests = config["tests"]["test_program"]
+    for key in config_tests:
+        if isinstance(config_tests[key], dict):
+            command_arguments = config_tests[key]["command_arguments"]
+            expected_output = config_tests[key]["expected_output"]
+            output = config_tests[key].get("output", "stdout")
+
+            test_cases.append((key, command_arguments, output, expected_output))
+
+    return test_cases
 
 class TestProgram(unittest.TestCase):
     @classmethod
@@ -18,32 +31,18 @@ class TestProgram(unittest.TestCase):
 
         self._base_directory = os.path.dirname(os.path.dirname(__file__))
 
-        input_directory_name = config.get("tests", {}).get("input_directory", "inputs")    
+        input_directory_name = config["tests"].get("input_directory", "inputs")    
         self._input_directory = os.path.join(self._base_directory, input_directory_name)
         self._input_files = os.listdir(self._input_directory)
 
-        expected_directory_name = config.get("tests", {}).get("expected_directory", "expected")
+        expected_directory_name = config["tests"].get("expected_directory", "expected")
         self._expected_directory = os.path.join(self._base_directory, expected_directory_name)
         self._expected_files = os.listdir(self._expected_directory)
-
-
-    def load_test_cases(self):
-        test_cases = []
-        config_tests = config.get("tests", {}).get("test_program", {})
-        for key in config_tests:
-            if isinstance(config_tests[key], dict):
-                command_arguments = config_tests[key].get("command_arguments", "")
-                expected_output = config_tests[key].get("expected_output", "")
-                output = config_tests[key].get("output", "stdout")
-
-                test_cases.append((key, command_arguments, output, expected_output))
-
-        return test_cases
     
-    @weight(weights.TEST_PROGRAM / NUM_TESTS)
     @parameterized.expand(load_test_cases)
+    @weight(weights.TEST_PROGRAM / NUM_TESTS)
     def test_program(self, _, command_arguments, output, expected_output):
-        executable = config.get("global", {}).get("executable", "a.out")
+        executable = config["global"]["executable"]
         command = f"./{executable} {' '.join(command_arguments)}"
         process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=os.path.dirname(os.path.dirname(__file__)))
 
@@ -63,7 +62,7 @@ class TestProgram(unittest.TestCase):
 
         self.assertTrue(True)
     
-    def print_different(self, result, expected): 
+    def print_difference(self, result, expected): 
         result_split = set(result.split("\n"))
         expected_split = set(expected.split("\n"))
         missing_from_output = expected_split.difference(result_split)

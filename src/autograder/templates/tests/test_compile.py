@@ -6,11 +6,11 @@ import subprocess
 import test_files
 from config import config
 
-FILES = config.get("files_from_student", []) + config.get("files_from_solution", [])
-EXEC = config.get("global", {}).get("executable", "a.out")
+FILES = config["global"]["files_from_student"] + config["global"].get("files_from_solution", [])
+EXEC = config["global"]["executable"]
 GCC = f"gcc -std=c11 -g -Wall -Wshadow --pedantic -Wvla -Werror"
 COMMAND = f"{GCC} {FILES} -o {EXEC}"
-COMMAND = config.get("tests", {}).get("test_compile", COMMAND)
+COMMAND = config["tests"].get("test_compile", {}).get("command", COMMAND)
 
 class TestCompile(unittest.TestCase):
 
