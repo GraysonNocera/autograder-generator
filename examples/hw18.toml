@@ -4,45 +4,47 @@ files_from_solution = []
 executable = "hw18"
 
 [requirements-txt] # OPTIONAL: if using default file, no need to include this line or the line below
-injected = false
+inject = false
 
 [run_autograder]
-injected = false
+inject = false
 
 [run_tests-py]
-injected = false
+inject = false
 
 [setup-sh]
-injected = false
+inject = false
 
 [tests]
 description = """
 Python test files within the tests/ directory. TAs can inject these 
 files or give parameters in this toml to automatically generate them.
 """
+input_directory = "inputs" # OPTIONAL, defaults to "inputs"
+expected_directory = "expected" # OPTIONAL, defaults to "expected"
 
 [tests.test_files] # OPTIONAL
 weight = 10
 
-[tests.test_gcc] # OPTIONAL
-weight = 20
+[tests.test_compile] # OPTIONAL
+weight = 10
 command = "gcc -Wall -Werror -g main.c maze.c -o hw18"
 
 [tests.test_memory]
 weight = 20
 valgrind_options = [ "--leak-check=full", "--error-exitcode=1" ]
-command_arguments = [ "input1.txt" ] # this is only the arguments after the executable
+command_arguments = [ "inputs/maze1" ] # this is only the arguments after the executable
 
 [tests.test_program]
 weight = 60 # splits this weight between the number of tests
 
 [tests.test_program.0]
-command_arguments = [ "input1.txt" ]
-expected_in_file = true
-expected_output = "output1.txt"
+command_arguments = [ "inputs/maze1" ]
+output = "stdout"
+expected_output = "expected/expected1"
 
 [tests.test_program.1]
-command_arguments = [ "input2.txt" ]
-expected_in_file = true
-expected_output = "output2.txt"
+command_arguments = [ "inputs/maze2" ]
+output = "stdout"
+expected_output = "expected/expected3"
 

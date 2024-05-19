@@ -1,0 +1,61 @@
+# COMPREHENSIVE EXAMPLE OF A TOML FILE
+
+[global] # REQUIRED
+files_from_student = [ "test.c", "test.h", "main.c" ] # REQUIRED
+files_from_solution = [ "helper.c", "helper.h" ] # DEFAULT: []
+executable = "hwx" # REQUIRED
+
+[requirements-txt] # OPTIONAL: if using template file, no need to include this line or the line below
+inject = false
+
+[run_autograder] # OPTIONAL
+inject = false
+
+# Example, run_tests-py is not included in the toml, so we will use the template in src/autograder/templates/
+
+[setup-sh] # we can also inject our own file for each file in the autograder
+inject = true
+path = "example/path/to/file/setup.sh"
+
+[tests] # HEADER REQUIRED
+description = """
+Python test files within the tests/ directory. TAs can inject these 
+files or give parameters in this toml to automatically generate them.
+""" # OPTIONAL
+input_directory = "inputs" # DEFAULT: "inputs"
+expected_directory = "expected" # DEFAULT: "expected"
+
+# all weight parameters in the tests are optional and have defaults
+
+[tests.test_files] # HEADER OPTIONAL if not injecting a file
+inject = true # similar to global files, we can inject our own unit testing file
+path = "example/path/to/file/test_files.py" # REQUIRED if inject is true
+weight = 10 # DEFAULT: 10
+
+# if neither "weight" nor "command" need to be specified (i.e. if defaults are being used), tests.test_compile
+# need not be included in the toml file
+[tests.test_compile] # HEADER OPTIONAL if no fields under it
+weight = 20 # DEFAULT: 10
+command = "gcc -Wall -Werror -g main.c maze.c -o hw18" # DEFAULT: "gcc -std=c11 -g -Wall -Wshadow --pedantic -Wvla -Werror [files_from_student] [files_from_solution] -o [executable]"
+
+[tests.test_memory] # HEADER REQUIRED
+weight = 20 # DEFAULT: 20
+command_arguments = [ "inputs/input1.txt" ] # REQUIRED: this is only the arguments after the executable
+
+[tests.test_program] # HEADER REQUIRED
+# each enumerated test will be run in order
+weight = 60 # splits this weight between the number of tests
+
+[tests.test_program.input1] # REQUIRED: the name of the test will be seen in gradescope
+command_arguments = [ "inputs/input1.txt", 20 ] # REQUIRED: arguments after the executable
+output = "stdout" # where to look for output, specify a file name or "stdout", DEFAULT: stdout
+expected_output = "x yy 10" # REQUIRED: what to compare the output to, can be a file name or a string
+
+[tests.test_program.1]
+command_arguments = [ "inputs/input2.txt" ]
+output = "output1.txt"
+expected_output = "expected/expected1.txt"
+
+[tests.test_program.2]
+command_arguments = [ 10, 20 ]
+expected_output = "x yy 10"
