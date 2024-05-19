@@ -11,10 +11,10 @@ GCC = f"gcc -std=c11 -g -Wall -Wshadow --pedantic -Wvla -Werror"
 COMMAND = f"{GCC} {FILES} -o {EXEC}"
 COMMAND = config.get("tests", {}).get("test_compile", COMMAND)
 
-class test_gcc(unittest.TestCase):
+class test_compile(unittest.TestCase):
     @weight(weights.TEST_COMPILE)
-    def test_gcc(self):
-        """Run gcc"""
+    def test_compile(self):
+        """Run compile command"""
         compiled = subprocess.run(COMMAND, shell=True, capture_output=True, cwd=os.path.dirname(os.path.dirname(__file__)))
         self.assertEqual(compiled.returncode, 0, f"Command {COMMAND} failed! {compiled.stderr, compiled.stdout}")
         print("Code compiles correctly!")
