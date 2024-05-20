@@ -8,7 +8,7 @@ class Generator:
     def __init__(self, path_to_config):
         self.path_to_config = path_to_config
         self.config = tomllib.load(open(path_to_config, "rb"))
-        self.zip = zipfile.ZipFile(f"{self.config["global"]["executable"]}.zip", "w")
+        self.zip = zipfile.ZipFile(f"{self.config["executable"]}.zip", "w")
 
     def generate(self):
         path_to_inputs = self.config["tests"].get("input_directory", "inputs")
@@ -27,10 +27,10 @@ class Generator:
         def inject(file):
             with open(file, "w") as f:
                 f.write("#!/usr/bin/env bash\n")
-                for file in self.config["global"]["files_from_student"]:
+                for file in self.config["files_from_student"]:
                     f.write(f"cp /autograder/submission/{file} /autograder/source/{file}\n")
                 f.write("cd /autograder/source\n")
-                f.write("python3 run_tests.py\n")
+                f.write("python3.11 run_tests.py\n")
         self._generate_template_file(self.config, "run_autograder", "run_autograder", inject)
         self._generate_tests()
 
