@@ -8,7 +8,7 @@ import subprocess
 from config import config
 
 MEMORY_ERROR = 2
-SEGMENTATION_FAULT = -11
+SEGMENTATION_FAULT = 139
 NUM_TESTS = 1
 
 class TestMemory(unittest.TestCase):
