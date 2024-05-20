@@ -1,6 +1,5 @@
 # COMPREHENSIVE EXAMPLE OF A TOML FILE
 
-[global] # REQUIRED
 files_from_student = [ "test.c", "test.h", "main.c" ] # REQUIRED
 files_from_solution = [ "helper.c", "helper.h" ] # DEFAULT: []
 executable = "hwx" # REQUIRED

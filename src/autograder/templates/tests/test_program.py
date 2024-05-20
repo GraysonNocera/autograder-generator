@@ -42,7 +42,7 @@ class TestProgram(unittest.TestCase):
     @parameterized.expand(load_test_cases)
     @weight(weights.TEST_PROGRAM / NUM_TESTS)
     def test_program(self, _, command_arguments, output, expected_output):
-        executable = config["global"]["executable"]
+        executable = config["executable"]
         command = f"./{executable} {' '.join(command_arguments)}"
         process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=os.path.dirname(os.path.dirname(__file__)))
 

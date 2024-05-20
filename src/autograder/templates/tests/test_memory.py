@@ -30,7 +30,7 @@ class TestMemory(unittest.TestCase):
 
   @weight(weights.TEST_MEMORY)          
   def test_memory(self):
-    executable = config["global"]["executable"]
+    executable = config["executable"]
     command_arguments = config["tests"]["test_memory"]["command_arguments"]
     command = f"valgrind -s --errors-for-leak-kinds=all --leak-check=full --show-leak-kinds=all --error-exitcode={MEMORY_ERROR} ./{executable} {' '.join(command_arguments)}"  
     

@@ -6,8 +6,8 @@ import subprocess
 import test_files
 from config import config
 
-FILES = config["global"]["files_from_student"] + config["global"].get("files_from_solution", [])
-EXEC = config["global"]["executable"]
+FILES = config["files_from_student"] + config.get("files_from_solution", [])
+EXEC = config["executable"]
 GCC = f"gcc -std=c11 -g -Wall -Wshadow --pedantic -Wvla -Werror"
 COMMAND = f"{GCC} {FILES} -o {EXEC}"
 COMMAND = config["tests"].get("test_compile", {}).get("command", COMMAND)

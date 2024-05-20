@@ -3,7 +3,7 @@ import tomllib
 import glob
 
 def get_toml():
-    toml_files = glob.glob("*.toml")
+    toml_files = glob.glob("*.toml", root_dir=pathlib.Path(__file__).parent)
     if len(toml_files) == 0:
         raise FileNotFoundError("No .toml file found")
     if len(toml_files) > 1:

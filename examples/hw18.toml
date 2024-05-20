@@ -1,4 +1,3 @@
-[global] # ALL GLOBAL FIELDS REQUIRED
 files_from_student = [ "main.c", "maze.c", "maze.h" ]
 files_from_solution = []
 executable = "hw18"
@@ -28,11 +27,9 @@ weight = 10
 
 [tests.test_compile] # OPTIONAL
 weight = 10
-command = "gcc -Wall -Werror -g main.c maze.c -o hw18"
 
 [tests.test_memory]
 weight = 20
-valgrind_options = [ "--leak-check=full", "--error-exitcode=1" ]
 command_arguments = [ "inputs/maze1" ] # this is only the arguments after the executable
 
 [tests.test_program]
@@ -46,5 +43,5 @@ expected_output = "expected/expected1"
 [tests.test_program.1]
 command_arguments = [ "inputs/maze2" ]
 output = "stdout"
-expected_output = "expected/expected3"
+expected_output = "expected/expected2"
 
