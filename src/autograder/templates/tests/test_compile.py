@@ -9,7 +9,7 @@ from config import config
 FILES = config["files_from_student"] + config.get("files_from_solution", [])
 EXEC = config["executable"]
 GCC = f"gcc -std=c11 -g -Wall -Wshadow --pedantic -Wvla -Werror"
-COMMAND = f"{GCC} {FILES} -o {EXEC}"
+COMMAND = f"{GCC} {' '.join(FILES)} -o {EXEC}"
 COMMAND = config["tests"].get("test_compile", {}).get("command", COMMAND)
 
 class TestCompile(unittest.TestCase):
