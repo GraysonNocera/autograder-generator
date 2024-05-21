@@ -1,12 +1,14 @@
-import argparse
 import tomllib
 import zipfile
 import pathlib
 
 class Generator:
     def __init__(self, path_to_config):
-        self.path_to_config = path_to_config
-        self.config = tomllib.load(open(path_to_config, "rb"))
+        self.path_to_config = pathlib.Path(path_to_config).resolve()
+
+        with open(path_to_config, "rb") as f:
+            self.config = tomllib.load(f)
+
         self.zip = zipfile.ZipFile(f"{self.config["executable"]}.zip", "w")
 
     def generate(self):
@@ -14,9 +16,11 @@ class Generator:
         path_to_expected = pathlib.Path(self.config["tests"].get("expected_directory", "expected"))
 
         for file in path_to_inputs.glob("*"):
+            file = pathlib.Path(file.parts[-1])
             self.zip.write(path_to_inputs / file, path_to_inputs.parts[-1] / file)
 
         for file in path_to_expected.glob("*"):
+            file = pathlib.Path(file.parts[-1])
             self.zip.write(path_to_expected / file, path_to_expected.parts[-1] / file)
 
         self._generate_template_file(self.config, "setup-sh", "setup.sh")
@@ -33,22 +37,25 @@ class Generator:
         self._generate_template_file(self.config, "run_autograder", "run_autograder", inject)
         self._generate_tests()
 
-        path_to_weights = pathlib.Path(__file__).parent / "templates" / "tests" / "weights.py"
-        self.zip.write(path_to_weights, "tests/weights.py")
+        path_to_tests = pathlib.Path(__file__).parent / "templates" / "tests"
 
-        path_to_config_parser = pathlib.Path(__file__).parent / "templates" / "tests" / "config.py" 
-        self.zip.write(path_to_config_parser, "tests/config.py")
+        path_to_weights = path_to_tests / "weights.py"
+        self.zip.write(path_to_weights, pathlib.Path(path_to_tests.parts[-1]) / "weights.py")
 
-        self.zip.write(self.path_to_config, pathlib.Path("tests") / self.path_to_config.split("/")[-1])
+        path_to_config_parser = path_to_tests / "config.py" 
+        self.zip.write(path_to_config_parser, pathlib.Path(path_to_tests.parts[-1]) / "config.py")
+
+        self.zip.write(self.path_to_config, pathlib.Path(path_to_tests.parts[-1]) / self.path_to_config.parts[-1])
 
         self.zip.close()
 
     def _generate_tests(self):
         config = self.config["tests"]
-        self._generate_template_file(config, "test_files", "tests/test_files.py")
-        self._generate_template_file(config, "test_compile", "tests/test_compile.py")
-        self._generate_template_file(config, "test_memory", "tests/test_memory.py")
-        self._generate_template_file(config, "test_program", "tests/test_program.py")
+        path_to_tests = pathlib.Path("tests")
+        self._generate_template_file(config, "test_files", path_to_tests / "test_files.py")
+        self._generate_template_file(config, "test_compile", path_to_tests / "test_compile.py")
+        self._generate_template_file(config, "test_memory", path_to_tests / "test_memory.py")
+        self._generate_template_file(config, "test_program", path_to_tests / "test_program.py")
 
     def _generate_template_file(self, base_config, key, default_filename, inject=None):
         config = base_config.get(key, {})
@@ -59,11 +66,3 @@ class Generator:
         if inject:
             inject(path_to_template)
         self.zip.write(path_to_template, default_filename)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate an autograder")
-    parser.add_argument("config", help="Path to the configuration file")
-    args = parser.parse_args()
-
-    generator = Generator(args.config)
-    generator.generate()
