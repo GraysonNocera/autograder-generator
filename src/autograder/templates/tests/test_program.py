@@ -1,12 +1,12 @@
 import unittest
 from gradescope_utils.autograder_utils.decorators import weight
-import os
 import test_compile
 import test_files
 import weights
 import subprocess
 from config import config
 from parameterized import parameterized
+import pathlib
 
 NUM_TESTS = sum(1 for value in config["tests"]["test_program"].values() if isinstance(value, dict)) 
 
@@ -26,25 +26,26 @@ def load_test_cases():
 class TestProgram(unittest.TestCase):
     @classmethod
     def setUpClass(self):
+        
         test_files.TestFiles().test_files()
         test_compile.TestCompile().test_compile()
 
-        self._base_directory = os.path.dirname(os.path.dirname(__file__))
+        self._base_directory = pathlib.Path(__file__).parents[1]
 
-        input_directory_name = config["tests"].get("input_directory", "inputs")    
-        self._input_directory = os.path.join(self._base_directory, input_directory_name)
-        self._input_files = os.listdir(self._input_directory)
+        input_directory_name = config["tests"].get("input_directory", "inputs")
+        self._input_directory = self._base_directory / input_directory_name 
+        self._input_files = self._input_directory.glob("*")
 
         expected_directory_name = config["tests"].get("expected_directory", "expected")
-        self._expected_directory = os.path.join(self._base_directory, expected_directory_name)
-        self._expected_files = os.listdir(self._expected_directory)
-    
+        self._expected_directory = self._base_directory / expected_directory_name
+        self._expected_files = self._expected_directory.glob("*")
+   
     @parameterized.expand(load_test_cases)
     @weight(weights.TEST_PROGRAM / NUM_TESTS)
     def test_program(self, _, command_arguments, output, expected_output):
         executable = config["executable"]
         command = f"./{executable} {' '.join(command_arguments)}"
-        process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=os.path.dirname(os.path.dirname(__file__)))
+        process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=pathlib.Path(__file__).parents[1])
 
         if output == "stdout":
             result = process.stdout

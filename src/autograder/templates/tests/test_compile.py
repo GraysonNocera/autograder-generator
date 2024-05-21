@@ -1,10 +1,10 @@
 import unittest
 from gradescope_utils.autograder_utils.decorators import weight
-import os
 import weights
 import subprocess
 import test_files
 from config import config
+import pathlib
 
 FILES = config["files_from_student"] + config.get("files_from_solution", [])
 EXEC = config["executable"]
@@ -21,6 +21,6 @@ class TestCompile(unittest.TestCase):
     @weight(weights.TEST_COMPILE)
     def test_compile(self):
         """Run compile command"""
-        compiled = subprocess.run(COMMAND, shell=True, capture_output=True, cwd=os.path.dirname(os.path.dirname(__file__)))
+        compiled = subprocess.run(COMMAND, shell=True, capture_output=True, cwd=pathlib.Path(__file__).parents[1])
         self.assertEqual(compiled.returncode, 0, f"Command {COMMAND} failed! {compiled.stderr, compiled.stdout}")
         print("Code compiles correctly!")

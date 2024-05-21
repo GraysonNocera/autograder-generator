@@ -2,7 +2,6 @@ import argparse
 import tomllib
 import zipfile
 import pathlib
-import os
 
 class Generator:
     def __init__(self, path_to_config):
@@ -11,14 +10,14 @@ class Generator:
         self.zip = zipfile.ZipFile(f"{self.config["executable"]}.zip", "w")
 
     def generate(self):
-        path_to_inputs = self.config["tests"].get("input_directory", "inputs")
-        path_to_expected = self.config["tests"].get("expected_directory", "expected")
+        path_to_inputs = pathlib.Path(self.config["tests"].get("input_directory", "inputs"))
+        path_to_expected = pathlib.Path(self.config["tests"].get("expected_directory", "expected"))
 
-        for file in os.listdir(path_to_inputs):
-            self.zip.write(pathlib.Path(path_to_inputs) / pathlib.Path(file), pathlib.Path(path_to_inputs.split("/")[-1] / pathlib.Path(file)))
+        for file in path_to_inputs.glob("*"):
+            self.zip.write(path_to_inputs / file, path_to_inputs.parts[-1] / file)
 
-        for file in os.listdir(path_to_expected):
-            self.zip.write(pathlib.Path(path_to_expected) / pathlib.Path(file), pathlib.Path(path_to_expected.split("/")[-1] / pathlib.Path(file)))
+        for file in path_to_expected.glob("*"):
+            self.zip.write(path_to_expected / file, path_to_expected.parts[-1] / file)
 
         self._generate_template_file(self.config, "setup-sh", "setup.sh")
         self._generate_template_file(self.config, "requirements-txt", "requirements.txt")
