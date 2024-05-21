@@ -31,3 +31,8 @@ gradergen = "autograder.__main__:main"
 [project.urls]
 Homepage = "https://github.com/GraysonNocera/autograder-generator"
 Issues = "https://github.com/GraysonNocera/autograder-generator/issues"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
