@@ -1,2 +1,7 @@
 run_autograder
 *.zip
+venv
+inputs
+expected
+testing
+__pycache__
