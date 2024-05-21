@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+cp /autograder/submission/main.c /autograder/source/main.c
+cp /autograder/submission/maze.c /autograder/source/maze.c
+cp /autograder/submission/maze.h /autograder/source/maze.h
+cd /autograder/source
+python3.11 run_tests.py

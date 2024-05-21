@@ -1,4 +1,3 @@
-run_autograder
 *.zip
 venv
 inputs
