@@ -1,4 +1,4 @@
-from autograder.generator import Generator
+from gradergen.generator import Generator
 import pathlib
 import zipfile
 import os

@@ -1,5 +1,5 @@
 import argparse
-from autograder.generator import Generator
+from gradergen.generator import Generator
 
 def main():
     parser = argparse.ArgumentParser(description="Generate an autograder")

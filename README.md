@@ -1,4 +1,4 @@
-# autograder-generator
+# gradergen
 
 ECE 264 utility for generating autograder files. Given a toml file like this:
 
