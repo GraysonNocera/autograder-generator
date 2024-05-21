@@ -17,3 +17,4 @@ src/autograder/templates/tests/test_files.py
 src/autograder/templates/tests/test_memory.py
 src/autograder/templates/tests/test_program.py
 src/autograder/templates/tests/weights.py
+tests/test_demo.py
