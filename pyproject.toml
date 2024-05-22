@@ -32,6 +32,9 @@ gradergen = "gradergen.__main__:main"
 Homepage = "https://github.com/GraysonNocera/gradergen"
 Issues = "https://github.com/GraysonNocera/gradergen/issues"
 
+[tool.setuptools.package-data]
+"*" = ["*.*"] 
+
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib",
