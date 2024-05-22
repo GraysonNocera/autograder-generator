@@ -10,7 +10,9 @@ src/gradergen.egg-info/dependency_links.txt
 src/gradergen.egg-info/entry_points.txt
 src/gradergen.egg-info/requires.txt
 src/gradergen.egg-info/top_level.txt
+src/gradergen/templates/requirements.txt
 src/gradergen/templates/run_tests.py
+src/gradergen/templates/setup.sh
 src/gradergen/templates/tests/config.py
 src/gradergen/templates/tests/test_compile.py
 src/gradergen/templates/tests/test_files.py

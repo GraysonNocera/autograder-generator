@@ -1,2 +1,2 @@
 [console_scripts]
-gradergen = autograder.__main__:main
+gradergen = gradergen.__main__:main
