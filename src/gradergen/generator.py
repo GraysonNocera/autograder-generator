@@ -9,7 +9,8 @@ class Generator:
         with open(path_to_config, "rb") as f:
             self.config = tomllib.load(f)
 
-        self.zip = zipfile.ZipFile(f"{self.config["executable"]}.zip", "w")
+        zip_file = self.config.get("zip_file", f"{self.config["executable"]}.zip")
+        self.zip = zipfile.ZipFile(zip_file, "w")
 
     def generate(self):
         path_to_inputs = pathlib.Path(self.config["tests"].get("input_directory", "inputs"))
@@ -59,7 +60,7 @@ class Generator:
 
     def _generate_template_file(self, base_config, key, default_filename, inject=None):
         config = base_config.get(key, {})
-        if config.get("inject", False):
+        if "path" in config:
             self.zip.write(config["path"], default_filename)
             return
         path_to_template = pathlib.Path(__file__).parent / "templates" / default_filename

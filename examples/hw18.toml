@@ -3,16 +3,6 @@ files_from_solution = []
 executable = "hw18"
 
 [requirements-txt] # OPTIONAL: if using default file, no need to include this line or the line below
-inject = false
-
-[run_autograder]
-inject = false
-
-[run_tests-py]
-inject = false
-
-[setup-sh]
-inject = false
 
 [tests]
 description = """
@@ -35,12 +25,12 @@ command_arguments = [ "inputs/maze1" ] # this is only the arguments after the ex
 [tests.test_program]
 weight = 60 # splits this weight between the number of tests
 
-[tests.test_program.0]
+[tests.test_program.maze1]
 command_arguments = [ "inputs/maze1" ]
 output = "stdout"
 expected_output = "expected/expected1"
 
-[tests.test_program.1]
+[tests.test_program.maze2]
 command_arguments = [ "inputs/maze2" ]
 output = "stdout"
 expected_output = "expected/expected2"

@@ -3,17 +3,13 @@
 files_from_student = [ "test.c", "test.h", "main.c" ] # REQUIRED
 files_from_solution = [ "helper.c", "helper.h" ] # DEFAULT: []
 executable = "hwx" # REQUIRED
+zip_file = "integration.zip" # DEFAULT: "<executable>.zip"
 
-[requirements-txt] # OPTIONAL: if using template file, no need to include this line or the line below
-inject = false
-
-[run_autograder] # OPTIONAL
-inject = false
+[requirements-txt] # OPTIONAL: if using template file, no need to include this line
 
 # Example, run_tests-py is not included in the toml, so we will use the template in src/autograder/templates/
 
 [setup-sh] # we can also inject our own file for each file in the autograder
-inject = true
 path = "example/path/to/file/setup.sh"
 
 [tests] # HEADER REQUIRED
@@ -27,8 +23,7 @@ expected_directory = "expected" # DEFAULT: "expected"
 # all weight parameters in the tests are optional and have defaults
 
 [tests.test_files] # HEADER OPTIONAL if not injecting a file
-inject = true # similar to global files, we can inject our own unit testing file
-path = "example/path/to/file/test_files.py" # REQUIRED if inject is true
+path = "example/path/to/file/test_files.py" # DEFAULT: "", will not inject if path not set
 weight = 10 # DEFAULT: 10
 
 # if neither "weight" nor "command" need to be specified (i.e. if defaults are being used), tests.test_compile
