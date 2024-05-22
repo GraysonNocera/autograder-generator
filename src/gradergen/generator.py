@@ -60,7 +60,7 @@ class Generator:
 
     def _generate_template_file(self, base_config, key, default_filename, inject=None):
         config = base_config.get(key, {})
-        if "path" in config:
+        if "path" in config and config["path"]:
             self.zip.write(config["path"], default_filename)
             return
         path_to_template = pathlib.Path(__file__).parent / "templates" / default_filename
