@@ -7,10 +7,11 @@ import subprocess
 from config import config
 from parameterized import parameterized
 import pathlib
+from typing import List
 
 NUM_TESTS = sum(1 for value in config["tests"]["test_program"].values() if isinstance(value, dict)) 
 
-def load_test_cases():
+def load_test_cases() -> List[tuple[str, List[str], str, str]]:
     test_cases = []
     config_tests = config["tests"]["test_program"]
     for key in config_tests:
@@ -42,7 +43,7 @@ class TestProgram(unittest.TestCase):
    
     @parameterized.expand(load_test_cases)
     @weight(weights.TEST_PROGRAM / NUM_TESTS)
-    def test_program(self, _, command_arguments, output, expected_output):
+    def test_program(self, _, command_arguments: List[str], output: str, expected_output: str):
         executable = config["executable"]
         command = f"./{executable} {' '.join(command_arguments)}"
         process = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=pathlib.Path(__file__).parents[1])
@@ -63,7 +64,7 @@ class TestProgram(unittest.TestCase):
 
         self.assertTrue(True)
     
-    def print_difference(self, result, expected): 
+    def print_difference(self, result: str, expected: str) -> None: 
         result_split = set(result.split("\n"))
         expected_split = set(expected.split("\n"))
         missing_from_output = expected_split.difference(result_split)

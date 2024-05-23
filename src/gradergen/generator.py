@@ -1,9 +1,10 @@
 import tomllib
 import zipfile
 import pathlib
+from typing import Callable
 
 class Generator:
-    def __init__(self, path_to_config):
+    def __init__(self, path_to_config: str) -> None:
         self.path_to_config = pathlib.Path(path_to_config).resolve()
 
         with open(path_to_config, "rb") as f:
@@ -12,7 +13,7 @@ class Generator:
         zip_file = self.config.get("zip_file", f"{self.config["executable"]}.zip")
         self.zip = zipfile.ZipFile(zip_file, "w")
 
-    def generate(self):
+    def generate(self) -> None:
         path_to_inputs = pathlib.Path(self.config["tests"].get("input_directory", "inputs"))
         path_to_expected = pathlib.Path(self.config["tests"].get("expected_directory", "expected"))
 
@@ -28,7 +29,7 @@ class Generator:
         self._generate_template_file(self.config, "requirements-txt", "requirements.txt")
         self._generate_template_file(self.config, "run_tests-py", "run_tests.py")
 
-        def inject(file):
+        def inject(file: pathlib.Path) -> None:
             with open(file, "w") as f:
                 f.write("#!/usr/bin/env bash\n")
                 for file in self.config["files_from_student"]:
@@ -50,7 +51,7 @@ class Generator:
 
         self.zip.close()
 
-    def _generate_tests(self):
+    def _generate_tests(self) -> None:
         config = self.config["tests"]
         path_to_tests = pathlib.Path("tests")
         self._generate_template_file(config, "test_files", path_to_tests / "test_files.py")
@@ -58,7 +59,7 @@ class Generator:
         self._generate_template_file(config, "test_memory", path_to_tests / "test_memory.py")
         self._generate_template_file(config, "test_program", path_to_tests / "test_program.py")
 
-    def _generate_template_file(self, base_config, key, default_filename, inject=None):
+    def _generate_template_file(self, base_config: dict, key: str, default_filename: str, inject: Callable[[pathlib.Path], None] = None) -> None:
         config = base_config.get(key, {})
         if "path" in config and config["path"]:
             self.zip.write(config["path"], default_filename)
