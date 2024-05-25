@@ -51,12 +51,14 @@ class TestProgram(unittest.TestCase):
         if output == "stdout":
             result = process.stdout
         else:
-            result = open(output, "r").read()
-          
-        try: # TODO: there must be a better way of doing this
-            expected = open(expected_output, "r").read()
-        except:
+            with open(output, "r") as f:
+                result = f.read()
+        
+        if isinstance(expected_output, dict) and expected_output.get("literal", ""):
             expected = expected_output
+        else:
+            with open(expected_output, "r") as f:
+                expected = f.read()
 
         if result != expected:
             self.print_difference(result, expected)
