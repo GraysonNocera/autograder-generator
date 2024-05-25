@@ -56,7 +56,6 @@ class Generator:
         path_to_tests = pathlib.Path("tests")
         self._generate_template_file(config, "test_files", path_to_tests / "test_files.py")
         self._generate_template_file(config, "test_compile", path_to_tests / "test_compile.py")
-        self._generate_template_file(config, "test_memory", path_to_tests / "test_memory.py")
         self._generate_template_file(config, "test_program", path_to_tests / "test_program.py")
 
     def _generate_template_file(self, base_config: dict, key: str, default_filename: str, inject: Callable[[pathlib.Path], None] = None) -> None:

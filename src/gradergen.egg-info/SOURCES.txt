@@ -16,7 +16,6 @@ src/gradergen/templates/setup.sh
 src/gradergen/templates/tests/config.py
 src/gradergen/templates/tests/test_compile.py
 src/gradergen/templates/tests/test_files.py
-src/gradergen/templates/tests/test_memory.py
 src/gradergen/templates/tests/test_program.py
 src/gradergen/templates/tests/weights.py
 tests/test_demo.py

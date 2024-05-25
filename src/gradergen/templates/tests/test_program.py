@@ -9,9 +9,12 @@ from parameterized import parameterized
 import pathlib
 from typing import List
 
-NUM_TESTS = sum(1 for value in config["tests"]["test_program"].values() if isinstance(value, dict)) 
+NUM_TEST_PROGRAM = sum(1 for value in config["tests"]["test_program"].values() if isinstance(value, dict)) 
+NUM_TESTS_MEMORY = sum(1 for value in config["tests"]["test_memory"].values() if isinstance(value, dict))
+MEMORY_ERROR = 2
+SEGMENTATION_FAULT = 139
 
-def load_test_cases() -> List[tuple[str, List[str], str, str]]:
+def load_program_test_cases() -> List[tuple[str, List[str], str, str]]:
     test_cases = []
     config_tests = config["tests"]["test_program"]
     for key in config_tests:
@@ -21,6 +24,16 @@ def load_test_cases() -> List[tuple[str, List[str], str, str]]:
             output = config_tests[key].get("output", "stdout")
 
             test_cases.append((key, command_arguments, output, expected_output))
+
+    return test_cases
+
+def load_memory_test_cases() -> List[tuple[str, List[str]]]:
+    test_cases = []
+    config_tests = config["tests"]["test_memory"]
+    for key in config_tests:
+        if isinstance(config_tests[key], dict):
+            command_arguments = config_tests[key]["command_arguments"]
+            test_cases.append((key, command_arguments))
 
     return test_cases
 
@@ -40,9 +53,23 @@ class TestProgram(unittest.TestCase):
         expected_directory_name = config["tests"].get("expected_directory", "expected")
         self._expected_directory = self._base_directory / expected_directory_name
         self._expected_files = self._expected_directory.glob("*")
-   
-    @parameterized.expand(load_test_cases)
-    @weight(weights.TEST_PROGRAM / NUM_TESTS)
+
+    @parameterized.expand(load_memory_test_cases)
+    @weight(weights.TEST_MEMORY / NUM_TESTS_MEMORY)
+    def test_memory(self, _, command_arguments: List[str]):
+        executable = config["executable"]
+        command = f"valgrind -s --errors-for-leak-kinds=all --leak-check=full --show-leak-kinds=all --error-exitcode={MEMORY_ERROR} ./{executable} {' '.join(command_arguments)}"  
+        
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=self._base_directory)
+        print("VALGRIND OUTPUT:")
+        print(result.stderr)
+        
+        self.assertNotEqual(result.returncode, MEMORY_ERROR, f"There are memory leaks in your program for valgrind command '{command}'!")
+        self.assertNotEqual(result.returncode, SEGMENTATION_FAULT, f"Your program has a segmentation fault for valgrind command '{command}'!")
+        print("No leaks or errors!") 
+
+    @parameterized.expand(load_program_test_cases)
+    @weight(weights.TEST_PROGRAM / NUM_TEST_PROGRAM)
     def test_program(self, _, command_arguments: List[str], output: str, expected_output: str):
         executable = config["executable"]
         command = f"./{executable} {' '.join(command_arguments)}"
