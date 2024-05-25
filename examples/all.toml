@@ -17,8 +17,8 @@ description = """
 Python test files within the tests/ directory. TAs can inject these 
 files or give parameters in this toml to automatically generate them.
 """ # OPTIONAL
-input_directory = "inputs" # DEFAULT: "inputs"
-expected_directory = "expected" # DEFAULT: "expected"
+input_directory = "inputs" # DEFAULT: "inputs", relative path to input directory from where you run the cli "gradergen"
+expected_directory = "expected" # DEFAULT: "expected", relative path to expected output directory from where you run the cli "gradergen"
 
 # all weight parameters in the tests are optional and have defaults
 
@@ -34,7 +34,12 @@ command = "gcc -Wall -Werror -g main.c maze.c -o hw18" # DEFAULT: "gcc -std=c11 
 
 [tests.test_memory] # HEADER REQUIRED
 weight = 20 # DEFAULT: 20
+
+[tests.test_memory.input1] # REQUIRED: the name of the test will be seen in gradescope
 command_arguments = [ "inputs/input1.txt" ] # REQUIRED: this is only the arguments after the executable
+
+[tests.test_memory.input2]
+command_arguments = [ "inputs/input2.txt" ]
 
 [tests.test_program] # HEADER REQUIRED
 # each enumerated test will be run in order

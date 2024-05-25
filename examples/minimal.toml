@@ -6,6 +6,8 @@ executable = "hwx"
 [tests] 
 
 [tests.test_memory]
+
+[tests.test_memory.input1]
 command_arguments = [ "inputs/input1.txt" ] 
 
 [tests.test_program] 

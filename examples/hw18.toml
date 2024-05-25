@@ -20,6 +20,8 @@ weight = 10
 
 [tests.test_memory]
 weight = 20
+
+[tests.test_memory.maze1]
 command_arguments = [ "inputs/maze1" ] # this is only the arguments after the executable
 
 [tests.test_program]
