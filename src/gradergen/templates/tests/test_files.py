@@ -9,7 +9,7 @@ class TestFiles(unittest.TestCase):
     @weight(weights.TEST_FILES)
     def test_files(self):
         """Check submitted files"""
-        missing_files = check_submitted_files(config["files_from_student"]) #, base=pathlib.Path(__file__).parents[1])
+        missing_files = check_submitted_files(config["files_from_student"], base=pathlib.Path(__file__).parents[1])
         for path in missing_files:
             print(f'Missing {path}')
         self.assertEqual(len(missing_files), 0, 'Missing required files')
