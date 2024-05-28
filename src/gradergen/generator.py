@@ -28,15 +28,8 @@ class Generator:
         self._generate_template_file(self.config, "setup-sh", "setup.sh")
         self._generate_template_file(self.config, "requirements-txt", "requirements.txt")
         self._generate_template_file(self.config, "run_tests-py", "run_tests.py")
+        self._generate_template_file(self.config, "run_autograder", "run_autograder")
 
-        def inject(file: pathlib.Path) -> None:
-            with open(file, "w") as f:
-                f.write("#!/usr/bin/env bash\n")
-                for file in self.config["files_from_student"]:
-                    f.write(f"cp /autograder/submission/{file} /autograder/source/{file}\n")
-                f.write("cd /autograder/source\n")
-                f.write("python3.11 run_tests.py\n")
-        self._generate_template_file(self.config, "run_autograder", "run_autograder", inject)
         self._generate_tests()
 
         path_to_tests = pathlib.Path(__file__).parent / "templates" / "tests"
@@ -58,12 +51,10 @@ class Generator:
         self._generate_template_file(config, "test_compile", path_to_tests / "test_compile.py")
         self._generate_template_file(config, "test_program", path_to_tests / "test_program.py")
 
-    def _generate_template_file(self, base_config: dict, key: str, default_filename: str, inject: Callable[[pathlib.Path], None] = None) -> None:
+    def _generate_template_file(self, base_config: dict, key: str, default_filename: str) -> None:
         config = base_config.get(key, {})
         if "path" in config and config["path"]:
             self.zip.write(config["path"], default_filename)
             return
         path_to_template = pathlib.Path(__file__).parent / "templates" / default_filename
-        if inject:
-            inject(path_to_template)
         self.zip.write(path_to_template, default_filename)
