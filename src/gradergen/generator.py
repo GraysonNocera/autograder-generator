@@ -42,6 +42,9 @@ class Generator:
 
         self.zip.write(self.path_to_config, pathlib.Path(path_to_tests.parts[-1]) / self.path_to_config.parts[-1])
 
+        for file in self.config.get("extra_files", []):
+            self.zip.write(file, pathlib.Path(file).parts[-1])
+
         self.zip.close()
 
     def _generate_tests(self) -> None:

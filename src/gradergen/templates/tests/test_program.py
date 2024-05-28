@@ -81,17 +81,26 @@ class TestProgram(unittest.TestCase):
             with open(output, "r") as f:
                 result = f.read()
         
-        if isinstance(expected_output, dict) and expected_output.get("literal", ""):
-            expected = expected_output
-        else:
-            with open(expected_output, "r") as f:
-                expected = f.read()
+        expected = self.get_expected_output(expected_output)
 
         if result != expected:
             self.print_difference(result, expected)
             self.assertTrue(False)
 
         self.assertTrue(True)
+
+    def get_expected_output(self, expected_output: dict | str) -> str:
+        if isinstance(expected_output, dict) and expected_output.get("literal", ""):
+            expected = expected_output["literal"]
+        elif isinstance(expected_output, dict) and expected_output.get("command", ""):
+            command = expected_output["command"]
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=pathlib.Path(__file__).parents[1])
+            expected = result.stdout
+        else:
+            with open(expected_output, "r") as f:
+                expected = f.read()
+
+        return expected
     
     def print_difference(self, result: str, expected: str) -> None: 
         result_split = set(result.split("\n"))

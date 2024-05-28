@@ -4,6 +4,7 @@ files_from_student = [ "test.c", "test.h", "main.c" ] # REQUIRED
 files_from_solution = [ "helper.c", "helper.h" ] # DEFAULT: []
 executable = "hwx" # REQUIRED
 zip_file = "integration.zip" # DEFAULT: "<executable>.zip"
+extra_files = ["run_each_test.py"]  # DEFAULT: [], any extra files to include in the zip (relative to where gradergen is run)
 
 [requirements-txt] # OPTIONAL: if using template file, no need to include this line
 
@@ -48,13 +49,15 @@ weight = 60 # splits this weight between the number of tests
 [tests.test_program.input1] # REQUIRED: the name of the test will be seen in gradescope
 command_arguments = [ "inputs/input1.txt", 20 ] # REQUIRED: arguments after the executable
 output = "stdout" # where to look for output, specify a file name or "stdout", DEFAULT: stdout
-expected_output = { literal = "x yy 10" } # REQUIRED: what to compare the output to, can be a file name (default) or a string ("literal")
+expected_output = { command = "python3 run_each_test.py" } # REQUIRED: what to compare the output to, can be a file name (default) or a string ("literal") or a command ("command")
+# if a command is given for expected_output, the stdout of that command will be compared to the output
+# to insert a script into the zip, add it to the "extra_files" list in the toml
 
 [tests.test_program.1]
 command_arguments = [ "inputs/input2.txt" ]
 output = "output1.txt"
-expected_output = "expected/expected1.txt"
+expected_output = "expected/expected1.txt" # compare contents of output1.txt to contents of expected/expected1.txt
 
 [tests.test_program.2]
 command_arguments = [ 10, 20 ]
-expected_output = { literal = "x yy 10" }
+expected_output = { literal = "x yy 10" } # compare stdout of program to string literal
